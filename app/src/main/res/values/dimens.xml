@@ -1,0 +1,9 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">6dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="card_view_title_padding">4dp</dimen>
+    <dimen name="title_text_size">26sp</dimen>
+    <dimen name="title_text_shadow_radius">2sp</dimen>
+    <dimen name="cafe_address_text_size">16sp</dimen>
+</resources>
