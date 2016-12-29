@@ -28,9 +28,15 @@ public class CafeListAdapter extends
         RecyclerView.Adapter<CafeListAdapter.CafeViewHolder> {
 
     private List<Cafe> cafeList;
+    private int layout = R.layout.cafe_card_view;
 
     public CafeListAdapter(List<Cafe> cafeList) {
         this.cafeList = cafeList;
+    }
+
+    public CafeListAdapter(List<Cafe> cafeList, int layout) {
+        this.cafeList = cafeList;
+        this.layout = layout;
     }
 
     @Override
@@ -38,12 +44,6 @@ public class CafeListAdapter extends
         return cafeList != null ? cafeList.size() : 0;
     }
 
-    private static void toggleVisibility(View... views) {
-        for (View view : views) {
-            boolean isVisible = view.getVisibility() == View.VISIBLE;
-            view.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
-        }
-    }
 
     @Override
     public void onBindViewHolder(CafeViewHolder cafeViewHolder, int i) {
@@ -51,12 +51,19 @@ public class CafeListAdapter extends
         Cafe cafei = cafeList.get(i);
         cafeViewHolder.cafeId = cafei.getCafeId();
 
-        Picasso
-                .with(context)
-                .load(cafei.getSrc())
-                .error(R.drawable.image_loading_error)
-                .fit()
-                .into(cafeViewHolder.vImage);
+        if (R.layout.cafe_card_view == layout)
+            Picasso
+                    .with(context)
+                    .load(cafei.getSrc())
+                    .error(R.drawable.image_loading_error)
+                     .fit()
+                    .into(cafeViewHolder.vImage);
+        else
+            Picasso
+                    .with(context)
+                    .load(cafei.getSrc())
+                    .error(R.drawable.image_loading_error)
+                    .into(cafeViewHolder.vImage);
 
         cafeViewHolder.vName.setText(cafei.getName());
 
@@ -74,12 +81,24 @@ public class CafeListAdapter extends
             Activity parent_activity = (Activity) context;
             Intent intent = new Intent(view.getContext(), CafeDescriptionActivity.class);
             intent.putExtra("id", cafeViewHolder.cafeId);
+            intent.putExtra("rank", cafei.getRank());
+            //parent_activity.getWindow().setExitTransition(new Explode());
+            parent_activity.startActivity(intent);
+
+        });
+
+        cafeViewHolder.itemView.setOnLongClickListener(view -> {
+            Activity parent_activity = (Activity) context;
+            Intent intent = new Intent(view.getContext(), CafeDescriptionActivity.class);
+            intent.putExtra("id", cafeViewHolder.cafeId);
+            intent.putExtra("rank", cafei.getRank());
             parent_activity.getWindow().setExitTransition(new Explode());
             parent_activity.startActivity(
                     intent,
                     ActivityOptions.makeSceneTransitionAnimation(parent_activity).toBundle()
             );
 
+            return true;
         });
     }
 
@@ -87,7 +106,7 @@ public class CafeListAdapter extends
     public CafeViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater
                 .from(viewGroup.getContext())
-                .inflate(R.layout.cafe_card_view, viewGroup, false);
+                .inflate(layout, viewGroup, false);
 
         return new CafeViewHolder(itemView);
     }
@@ -106,18 +125,13 @@ public class CafeListAdapter extends
             vAddress = (TextView) v.findViewById(R.id.cafe_address_text);
             vRank = (TextView) v.findViewById(R.id.cafe_rank_text);
 
-            v.setOnLongClickListener(view -> {
-                Activity parent_activity = (Activity) v.getContext();
-                Intent intent = new Intent(view.getContext(), CafeDescriptionActivity.class);
-                intent.putExtra("id", view.getId());
-                parent_activity.getWindow().setExitTransition(new Explode());
-                parent_activity.startActivity(
-                        intent,
-                        ActivityOptions.makeSceneTransitionAnimation(parent_activity).toBundle()
-                );
-
-                return true;
-            });
         }
     }
+
+    public void updateAll(List<Cafe> newList){
+        cafeList.clear();
+        cafeList.addAll(newList);
+        notifyDataSetChanged();
+    }
+
 }

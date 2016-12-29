@@ -19,7 +19,10 @@
         </activity>
         <activity android:name=".view.CafeDescriptionActivity" />
         <activity android:name=".view.EditCafeInfoActivity" />
-        <activity android:name=".view.AddCafeActivity"></activity>
+        <activity android:name=".view.AddCafeActivity" />
+        <activity android:name=".view.AddDishActivity" />
+        <activity android:name=".view.MenuActivity" />
+        <activity android:name=".view.EditDishActivity"></activity>
     </application>
 
 </manifest>

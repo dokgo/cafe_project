@@ -16,6 +16,8 @@ import com.study.dokgo.projectcafe.MainActivity;
 import com.study.dokgo.projectcafe.R;
 import com.study.dokgo.projectcafe.models.Cafe;
 import com.study.dokgo.projectcafe.models.Cafes;
+import com.study.dokgo.projectcafe.models.Dish;
+import com.study.dokgo.projectcafe.models.Dishes;
 import com.study.dokgo.projectcafe.models.NetworkAPI;
 import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 
@@ -23,79 +25,78 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class EditCafeInfoActivity extends AppCompatActivity {
+public class EditDishActivity extends AppCompatActivity {
+
+    NetworkAPI networkAPI;
+    String dishId;
+    Dish[] dish = new Dish[1];
+    String[] status = new String[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_cafe_info);
+        setContentView(R.layout.activity_edit_dish);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(arrow -> onBackPressed());
 
-        String cafeId;
+
         try {
-            cafeId = getIntent().getExtras().get("id").toString();
+            dishId = getIntent().getExtras().get("id").toString();
         } catch (NullPointerException e) {
             return;
         }
 
-        NetworkAPI networkAPI =
+        networkAPI =
                 new RetrofitAPI()
                         .getRetrofit()
 
                         .create(NetworkAPI.class);
 
-        Cafe[] cafe = new Cafe[1];
         networkAPI
-                .getCafeById(cafeId)
+                .getDishById(dishId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(Cafes::getCafes)
+                .map(Dishes::getMenu)
                 .flatMap(Observable::from)
                 .single()
                 .subscribe(
                         cf -> {
-                            cafe[0] = cf;
+                            dish[0] = cf;
                             Log.e("obs", cf.toString());
                         },
                         throwable -> Log.e(getClass().getName(), throwable.toString()),
                         () -> {
-                            toolbar.setTitle(toolbar.getContext().getString(R.string.edit, cafe[0].getName()));
-                            EditText editName = (EditText) findViewById(R.id.cafe_name_input);
-                            EditText editAddress = (EditText) findViewById(R.id.cafe_address_input);
-                            EditText editRank = (EditText) findViewById(R.id.cafe_rank_input);
-                            EditText editDesc = (EditText) findViewById(R.id.cafe_description_input);
-                            EditText editLink = (EditText) findViewById(R.id.cafe_src_input);
-                            ImageView imageView = (ImageView) findViewById(R.id.cafe_edit_image);
+                            toolbar.setTitle(dish[0].getName());
 
-                            Picasso
-                                    .with(getBaseContext())
-                                    .load(cafe[0].getSrc())
-                                    .error(R.drawable.image_loading_error)
-                                    .fit()
-                                    .into(imageView);
+                            EditText dishName = (EditText) findViewById(R.id.menu_dish_name_edit);
+                            EditText dishType = (EditText) findViewById(R.id.menu_dish_type_edit);
+                            EditText dishPortion = (EditText) findViewById(R.id.menu_dish_portion_edit);
+                            EditText dishCost = (EditText) findViewById(R.id.menu_dish_cost_edit);
+                            EditText dishTime = (EditText) findViewById(R.id.menu_dish_time_edit);
+                            EditText dishCuisine = (EditText) findViewById(R.id.menu_dish_cuisine_edit);
 
-                            editName.setText(cafe[0].getName());
-                            editAddress.setText(cafe[0].getAdress());
-                            editRank.setText(cafe[0].getRank());
-                            editDesc.setText(cafe[0].getDescription());
-                            editLink.setText(cafe[0].getSrc());
 
-                            String[] status = new String[1];
+                            dishName.setText(dish[0].getName());
+                            dishType.setText(dish[0].getType());
+                            dishPortion.setText(dish[0].getPortion());
+                            dishCost.setText(dish[0].getCost());
+                            dishTime.setText(dish[0].getTime());
+                            dishCuisine.setText(dish[0].getCuisine());
 
-                            Button saveButton = (Button) findViewById(R.id.save_button);
-                            Button deleteButton = (Button) findViewById(R.id.delete_button);
+                            Button saveButton = (Button) findViewById(R.id.save_button_edit);
                             Context context = saveButton.getContext();
+
                             saveButton.setOnClickListener(view -> {
 
-                                if (isEmpty(editName) ||
-                                        isEmpty(editRank) ||
-                                        isEmpty(editDesc) ||
-                                        isEmpty(editAddress) ||
-                                        isEmpty(editLink)
+                                if (isEmpty(dishName) ||
+                                        isEmpty(dishType) ||
+                                        isEmpty(dishPortion) ||
+                                        isEmpty(dishCost) ||
+                                        isEmpty(dishTime) ||
+                                        isEmpty(dishCuisine)
                                         ) {
 
                                     AlertDialog.Builder builder = new AlertDialog.Builder(saveButton.getContext());
@@ -106,13 +107,14 @@ public class EditCafeInfoActivity extends AppCompatActivity {
                                     alertD(context, R.string.dialog_about_title, R.string.dialog_about_message).show();
                                 } else {
                                     networkAPI
-                                            .updateCafe(
-                                                    editAddress.getText().toString(),
-                                                    editRank.getText().toString(),
-                                                    editDesc.getText().toString(),
-                                                    editName.getText().toString(),
-                                                    editLink.getText().toString(),
-                                                    cafeId
+                                            .updateDish(
+                                                    dishName.getText().toString(),
+                                                    dishType.getText().toString(),
+                                                    dishPortion.getText().toString(),
+                                                    dishCost.getText().toString(),
+                                                    dishTime.getText().toString(),
+                                                    dishCuisine.getText().toString(),
+                                                    dishId
                                             )
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
@@ -148,7 +150,7 @@ public class EditCafeInfoActivity extends AppCompatActivity {
                                 }
                             });
 
-                            deleteButton.setOnClickListener(
+                            /*deleteButton.setOnClickListener(
                                     view -> {
                                         new AlertDialog.Builder(this)
                                                 .setTitle(R.string.confirm)
@@ -156,7 +158,7 @@ public class EditCafeInfoActivity extends AppCompatActivity {
                                                 .setCancelable(false)
                                                 .setPositiveButton("Yes", (d, i) -> {
                                                     networkAPI
-                                                            .delete("cafe", "cafeId", cafeId)
+                                                            .delete("cafe", "cafeId", dishId)
                                                             .subscribeOn(Schedulers.io())
                                                             .observeOn(AndroidSchedulers.mainThread())
                                                             .subscribe(n -> {
@@ -188,7 +190,7 @@ public class EditCafeInfoActivity extends AppCompatActivity {
                                                 .setNegativeButton("No", null)
                                                 .show();
                                     }
-                            );
+                            );*/
 
                         }
                 );
@@ -201,10 +203,10 @@ public class EditCafeInfoActivity extends AppCompatActivity {
         builder.setMessage(text);
         builder.setCancelable(true);
         builder.setPositiveButton(android.R.string.ok,
-                (d, w) -> startActivity(
-                        new Intent(context,
-                                MainActivity.class)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                (d, w) -> {
+                    if (text != R.string.error)
+                    finish();
+                }
         );
         return builder.create();
     }

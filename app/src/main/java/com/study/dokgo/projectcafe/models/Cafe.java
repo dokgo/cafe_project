@@ -139,5 +139,18 @@ public class Cafe {
         );
     }
 
+    public int compareToUp(Cafe other) {
+        int a = Integer.parseInt(this.getRank());
+        int b = Integer.parseInt(other.getRank());
+
+        return Integer.compare(a, b);
+    }
+
+    public int compareToDown(Cafe other) {
+        int a = Integer.parseInt(this.getRank());
+        int b = Integer.parseInt(other.getRank());
+
+        return Integer.compare(b, a);
+    }
 
 }

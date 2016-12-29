@@ -2,17 +2,49 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
-    >
+    tools:context=".MainActivity">
 
-    <item android:id="@+id/action_settings"
+    <!--<item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
 
-    <item android:id="@+id/action_add_cafe"
-        android:title="@string/action_add_cafe"
+    <item
+        android:id="@+id/action_add_cafe"
         android:orderInCategory="100"
-         />
+        android:title="@string/action_add_cafe" />
+
+    <item
+        android:id="@+id/action_cafe_statistic"
+        android:orderInCategory="100"
+        android:title="@string/action_generate_statistic_cafe" />
+
+
+    <item
+        android:id="@+id/action_sort_by_name_up"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_by_name_up" />
+
+    <item
+        android:id="@+id/action_sort_by_name_down"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_by_name_down" />
+
+    <item
+        android:id="@+id/action_sort_by_rank_up"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_by_rank_up" />
+
+    <item
+        android:id="@+id/action_sort_by_rank_down"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_by_rank_down" />
+
 
 </menu>

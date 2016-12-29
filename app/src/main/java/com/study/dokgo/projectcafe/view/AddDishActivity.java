@@ -18,31 +18,40 @@ import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AddCafeActivity extends AppCompatActivity {
+public class AddDishActivity extends AppCompatActivity {
+
+    String cafeId;
+    NetworkAPI networkAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_cafe);
+        setContentView(R.layout.activity_add_dish);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Add cafe");
+        toolbar.setTitle("Add dish");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(arrow -> onBackPressed());
 
+        try {
+            cafeId = getIntent().getExtras().get("id").toString();
+        } catch (NullPointerException e) {
+            Log.e(getClass().getName(), "WTFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+            return;
+        }
 
-        NetworkAPI cafeService =
+        networkAPI =
                 new RetrofitAPI()
                         .getRetrofit()
-
                         .create(NetworkAPI.class);
 
 
-        EditText editName = (EditText) findViewById(R.id.cafe_name_add);
-        EditText editAddress = (EditText) findViewById(R.id.cafe_address_add);
-        EditText editRank = (EditText) findViewById(R.id.cafe_rank_add);
-        EditText editDesc = (EditText) findViewById(R.id.cafe_description_add);
-        EditText editLink = (EditText) findViewById(R.id.cafe_src_add);
+        EditText dishName = (EditText) findViewById(R.id.menu_dish_name);
+        EditText dishType = (EditText) findViewById(R.id.menu_dish_type);
+        EditText dishPortion = (EditText) findViewById(R.id.menu_dish_portion);
+        EditText dishCost = (EditText) findViewById(R.id.menu_dish_cost);
+        EditText dishTime = (EditText) findViewById(R.id.menu_dish_time);
+        EditText dishCuisine = (EditText) findViewById(R.id.menu_dish_cuisine);
 
         String[] status = new String[1];
 
@@ -50,21 +59,25 @@ public class AddCafeActivity extends AppCompatActivity {
         Context context = saveButton.getContext();
         saveButton.setOnClickListener(view -> {
 
-            if (isEmpty(editName) ||
-                    isEmpty(editRank) ||
-                    isEmpty(editDesc) ||
-                    isEmpty(editAddress) ||
-                    isEmpty(editLink)
+            if (isEmpty(dishName) ||
+                    isEmpty(dishPortion) ||
+                    isEmpty(dishCost) ||
+                    isEmpty(dishType) ||
+                    isEmpty(dishTime) ||
+                    isEmpty(dishCuisine)
                     ) {
+
                 alertD(context, R.string.dialog_about_title, R.string.dialog_about_message).show();
             } else {
-                cafeService
-                        .insertCafe(
-                                editAddress.getText().toString(),
-                                editRank.getText().toString(),
-                                editDesc.getText().toString(),
-                                editName.getText().toString(),
-                                editLink.getText().toString()
+                networkAPI
+                        .insertDish(
+                                dishName.getText().toString(),
+                                dishType.getText().toString(),
+                                dishPortion.getText().toString(),
+                                dishCost.getText().toString(),
+                                dishTime.getText().toString(),
+                                dishCuisine.getText().toString(),
+                                cafeId
                         )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -75,7 +88,7 @@ public class AddCafeActivity extends AppCompatActivity {
                                         status[0] = "OK";
                                     } else
                                         status[0] = n;
-                                    Log.e("ErrorPHP", n);
+                                    Log.e("ErrorPHP", status[0]);
                                 },
                                 t -> Log.e("INSERT ERROR", t.toString()),
                                 () -> {
@@ -112,11 +125,8 @@ public class AddCafeActivity extends AppCompatActivity {
         builder.setCancelable(false);
         builder.setPositiveButton(android.R.string.ok,
                 (d, w) -> {
-                    if (text != R.string.dialog_about_message)
-                        startActivity(
-                                new Intent(context,
-                                        MainActivity.class)
-                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    if (text != R.string.dialog_about_message && text != R.string.error)
+                        finish();
                 }
         );
         return builder.create();

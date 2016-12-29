@@ -1,94 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_cafe_description"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1"
-    tools:context="com.study.dokgo.projectcafe.view.CafeDescriptionActivity">
+    android:layout_width="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
+        android:id="@+id/toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:navigationIcon="?attr/homeAsUpIndicator"/>
-
-
-    <ImageView
-        android:id="@+id/cafe_description_image"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/toolbar" />
-
-    <TextView
-        android:id="@+id/description_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/cafe_description_image"
-        android:layout_alignParentStart="true"
-        android:paddingEnd="@dimen/card_view_title_padding"
-        android:paddingStart="@dimen/card_view_title_padding"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/cafe_address_text_size"
-        tools:text="@string/description" />
-
-    <LinearLayout
-        android:id="@+id/buttonPanel"
-        style="?android:attr/buttonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:background="@color/colorGray"
-        android:gravity="bottom"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/edit_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:text="@string/edit_button"
-            android:textColor="@color/colorBlack" />
-
-        <!--<Button
-            android:id="@+id/delete_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/delete_button"
-            android:textColor="@color/colorBlack" />-->
-
-
-    </LinearLayout>
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonPanel"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/cafe_description_image">
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/description_text"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/activity_cafe_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:paddingEnd="@dimen/card_view_title_padding"
-            android:paddingStart="@dimen/card_view_title_padding"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/cafe_address_text_size"
-            tools:text="@string/description" />
+            android:orientation="vertical"
+            android:weightSum="1"
+            tools:context="com.study.dokgo.projectcafe.view.CafeDescriptionActivity">
 
+
+            <TextView
+                android:id="@+id/description_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/cafe_description_image"
+                android:paddingEnd="@dimen/card_view_title_padding"
+                android:paddingStart="@dimen/card_view_title_padding"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/cafe_address_text_size"
+                tools:text="@string/description" />
+
+            <ImageView
+                android:id="@+id/cafe_description_image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/description_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/description_text"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="226dp"
+                android:paddingEnd="@dimen/card_view_title_padding"
+                android:paddingStart="@dimen/card_view_title_padding"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/cafe_address_text_size"
+                tools:text="@string/description" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/description_text"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                >
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/suggested_cafes_recycler_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:layout_gravity="bottom">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+
+        </RelativeLayout>
     </ScrollView>
 
-</RelativeLayout>
+</LinearLayout>

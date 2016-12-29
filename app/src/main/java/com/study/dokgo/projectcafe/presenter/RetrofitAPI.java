@@ -1,7 +1,11 @@
 package com.study.dokgo.projectcafe.presenter;
 
+import android.util.Log;
+
 import com.google.gson.GsonBuilder;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -13,14 +17,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitAPI {
     private static Retrofit retrofit;
 
-    public RetrofitAPI(){
+    public RetrofitAPI() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(msg -> Log.i("OK_HTTP", msg));
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        httpClient.addInterceptor(logging);
+
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                 .baseUrl("http://test.site/")
+                .client(httpClient.build())
                 .build();
     }
-    public Retrofit getRetrofit(){
+
+    public Retrofit getRetrofit() {
         return retrofit;
     }
 }

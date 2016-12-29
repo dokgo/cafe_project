@@ -13,10 +13,19 @@ import rx.Observable;
 
 public interface NetworkAPI {
     @GET("select.php")
-    Observable<CafeService> getCafeServiceData();
+    Observable<Cafes> getCafesData();
 
-    @GET("selectById.php")
-    Observable<CafeService> getCafeById(@Query("id") String id);
+    @GET("selectByFilter.php")
+    Observable<Cafes> getCafesData(@Query("rank") String rank);
+
+    @GET("selectCafeById.php")
+    Observable<Cafes> getCafeById(@Query("id") String id);
+
+    @GET("selectDishById.php")
+    Observable<Dishes> getDishById(@Query("id") String id);
+
+    @GET("selectMenu.php")
+    Observable<Dishes> getMenuById(@Query("id") String id);
 
     @FormUrlEncoded
     @POST("insertCafe.php")
@@ -29,6 +38,18 @@ public interface NetworkAPI {
     );
 
     @FormUrlEncoded
+    @POST("insertDish.php")
+    Observable<String> insertDish(
+            @Field("name") String name,
+            @Field("type") String type,
+            @Field("portion") String portion,
+            @Field("cost") String cost,
+            @Field("time") String time,
+            @Field("cuisine") String cuisine,
+            @Field("cafeId") String cafeId
+    );
+
+    @FormUrlEncoded
     @POST("updateCafe.php")
     Observable<String> updateCafe(
             @Field("address") String address,
@@ -37,6 +58,19 @@ public interface NetworkAPI {
             @Field("name") String name,
             @Field("src") String src,
             @Field("id") String id
+
+    );
+
+    @FormUrlEncoded
+    @POST("updateDish.php")
+    Observable<String> updateDish(
+            @Field("name") String name,
+            @Field("type") String type,
+            @Field("portion") String portion,
+            @Field("cost") String cost,
+            @Field("time") String time,
+            @Field("cuisine") String cuisine,
+            @Field("dishId") String dishId
 
     );
 

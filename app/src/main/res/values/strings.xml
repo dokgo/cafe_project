@@ -27,7 +27,27 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="action_add_cafe">Add cafe</string>
-    <string name="action_add_menu">Add menu</string>
+    <string name="action_add_menu">Add dish</string>
+    <string name="action_show_menu">Show menu</string>
+    <string name="action_edit_cafe">Edit cafe</string>
+    <string name="dish_name">Dish name</string>
+    <string name="dish_type">Dish type</string>
+    <string name="dish_portion">Dish portion</string>
+    <string name="dish_cost">Dish cost</string>
+    <string name="dish_time">Dish time</string>
+    <string name="action_sort_menu_by_name_up">Sort by name up</string>
+    <string name="action_sort_menu_by_name_down">Sort by name down</string>
+    <string name="action_sort_menu_by_cost_up">Sort by cost up</string>
+    <string name="action_sort_menu_by_cost_down">Sort by cost down</string>
+    <string name="action_sort_menu_by_portion_up">Sort by portion up</string>
+    <string name="action_sort_menu_by_portion_down">Sort by portion down</string>
+    <string name="dish_cuisine">Dish cuisine</string>
+    <string name="action_generate_statistic_cafe">Cafe statistic pdf</string>
+    <string name="action_generate_statistic_menu">Menu statistic pdf</string>
+    <string name="action_sort_by_name_up">Sort by name up</string>
+    <string name="action_sort_by_name_down">Sort by name down</string>
+    <string name="action_sort_by_rank_up">Sort by rank up</string>
+    <string name="action_sort_by_rank_down">Sort by rank down</string>
 
 
 </resources>

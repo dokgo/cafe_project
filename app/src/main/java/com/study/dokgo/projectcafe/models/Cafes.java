@@ -6,11 +6,11 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CafeService {
+public class Cafes {
 
     @SerializedName("cafes")
     @Expose
-    private List<Cafe> cafes = new ArrayList<Cafe>();
+    private List<Cafe> cafes = new ArrayList<>();
 
     /**
      * 
