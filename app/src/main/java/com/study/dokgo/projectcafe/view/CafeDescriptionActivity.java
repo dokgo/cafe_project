@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +47,13 @@ public class CafeDescriptionActivity extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(arrow -> onBackPressed());
+
+        Button comment_btn = (Button) findViewById(R.id.comments_button);
+        comment_btn.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CommentsActivity.class);
+            intent.putExtra("id", cafeId);
+            this.startActivity(intent);
+        });
 
 
         try {

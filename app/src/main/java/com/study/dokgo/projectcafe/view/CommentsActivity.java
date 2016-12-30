@@ -4,10 +4,10 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -21,10 +21,10 @@ import android.widget.Toast;
 
 import com.study.dokgo.projectcafe.MainActivity;
 import com.study.dokgo.projectcafe.R;
-import com.study.dokgo.projectcafe.models.Drink;
-import com.study.dokgo.projectcafe.models.Drinks;
+import com.study.dokgo.projectcafe.models.Comment;
+import com.study.dokgo.projectcafe.models.Comments;
 import com.study.dokgo.projectcafe.models.NetworkAPI;
-import com.study.dokgo.projectcafe.presenter.DrinkListAdapter;
+import com.study.dokgo.projectcafe.presenter.CommentListAdapter;
 import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 
 import java.util.Collections;
@@ -36,37 +36,32 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class DrinksActivity extends AppCompatActivity {
+public class CommentsActivity extends AppCompatActivity {
 
     Subscription subscription;
     NetworkAPI networkAPI;
     String cafeId;
-    List<Drink> drinkList;
-    List<Drink> drinkListCopy;
-    DrinkListAdapter drinkListAdapter;
+    List<Comment> commentList;
+    List<Comment> commentListCopy;
+    CommentListAdapter commentListAdapter;
     FloatingActionButton fab;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drinks);
+        setContentView(R.layout.activity_comments);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Drinks");
+        toolbar.setTitle("Comments");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(arrow -> onBackPressed());
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(this, AddDrinkActivity.class);
+            Intent intent = new Intent(this, AddCommentActivity.class);
             intent.putExtra("id", cafeId);
             this.startActivity(intent);
         });
-        if (MainActivity.user_status != 0) {
-            fab.hide();
-        }
-
 
         try {
             cafeId = getIntent().getExtras().get("id").toString();
@@ -105,11 +100,11 @@ public class DrinksActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_drinks, menu);
+        getMenuInflater().inflate(R.menu.menu_comments, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search_menu);
 
-        SearchManager searchManager = (SearchManager) DrinksActivity.this.getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) CommentsActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
         SearchView searchView = null;
         if (searchItem != null) {
@@ -117,10 +112,10 @@ public class DrinksActivity extends AppCompatActivity {
         }
         if (searchView != null) {
 
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(DrinksActivity.this.getComponentName()));
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(CommentsActivity.this.getComponentName()));
             searchView.setOnCloseListener(() -> {
-               /* String s = Integer.toString(drinkListCopy.size());
-                Toast t = Toast.makeText(DishesActivity.this, s, Toast.LENGTH_SHORT);
+               /* String s = Integer.toString(commentListCopy.size());
+                Toast t = Toast.makeText(CommentsActivity.this, s, Toast.LENGTH_SHORT);
                 t.show();*/
 
                 return false;
@@ -136,95 +131,85 @@ public class DrinksActivity extends AppCompatActivity {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     Log.e("input", newText);
-                    List<Drink> newList = new LinkedList<>();
+                    List<Comment> newList = new LinkedList<>();
                     String lower = newText.toLowerCase();
-                    for(Drink dish: drinkListCopy){
-                        if (dish.getName().toLowerCase().contains(lower)){
-                            newList.add(dish);
+                    for(Comment comment: commentListCopy){
+                        if (comment.getEmail().toLowerCase().contains(lower)){
+                            newList.add(comment);
                         }
                     }
 
-                    drinkListAdapter
+                    commentListAdapter
                             .updateAll(newList);
                     return false;
                 }
             });
-
 
         }
 
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_menu_statistic) {
-            String url = "http://test.site/generatePdf2.php?table=drink&id=" + cafeId;
+            String url = "http://test.site/generatePdf2.php?table=comment&id=" + cafeId;
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
             return true;
         }
 
-        if (id == R.id.action_sort_menu_by_name_up && drinkListAdapter != null) {
+
+        /*if (id == R.id.action_sort_menu_by_name_up && commentListAdapter != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = this.getLayoutInflater();
-            builder.setTitle("Sort by").setView(inflater.inflate(R.layout.drinks_sort_dialog, null));
+            builder.setTitle("Sort by").setView(inflater.inflate(R.layout.comment_sort_dialog, null));
             builder.setPositiveButton("Sort", (dialog,i) -> dialog.dismiss());
-            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(drinkList, (a, b) -> a.getName().compareTo(b.getName()));
-                drinkListAdapter.notifyDataSetChanged(); dialog.cancel();});
+            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(commentList, (a, b) -> a.getEmail().compareTo(b.getEmail()));
+                commentListAdapter.notifyDataSetChanged(); dialog.cancel();});
             AlertDialog dialog = builder.create();
             dialog.show();
             RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.sort_radio_group);
             rg.setOnCheckedChangeListener((g,i) -> {
                 switch (i) {
-                    case R.id.name_up:
-                        Collections.sort(drinkList, (a, b) -> a.compareToName(b));
-                        drinkListAdapter.notifyDataSetChanged();
+                    case R.id.title_up:
+                        Collections.sort(commentList, (a, b) -> a.compareToName(b));
+                        commentListAdapter.notifyDataSetChanged();
                         break;
-                    case R.id.name_down:
-                        Collections.sort(drinkList, (b, a) -> a.compareToName(b));
-                        drinkListAdapter.notifyDataSetChanged();
+                    case R.id.title_down:
+                        Collections.sort(commentList, (b, a) -> a.compareToName(b));
+                        commentListAdapter.notifyDataSetChanged();
                         break;
-                    case R.id.price_up:
-                        Collections.sort(drinkList, (a, b) -> a.compareToCost(b));
-                        drinkListAdapter.notifyDataSetChanged();
+                    case R.id.rank_up:
+                        Collections.sort(commentList, (a, b) -> a.compareToPrice(b));
+                        commentListAdapter.notifyDataSetChanged();
                         break;
-                    case R.id.price_down:
-                        Collections.sort(drinkList,(a, b) -> b.compareToCost(a));
-                        drinkListAdapter.notifyDataSetChanged();
-                        break;
-                    case R.id.volume_up:
-                        Collections.sort(drinkList,(a, b) -> a.compareToVolume(b));
-                        drinkListAdapter.notifyDataSetChanged();
-                        break;
-                    case R.id.volume_down:
-                        Collections.sort(drinkList,(a, b) -> b.compareToVolume(a));
-                        drinkListAdapter.notifyDataSetChanged();
+                    case R.id.rank_down:
+                        Collections.sort(commentList,(a, b) -> b.compareToPrice(a));
+                        commentListAdapter.notifyDataSetChanged();
                         break;
                 }
             });
             return true;
-        }
-
-        if (id == R.id.action_sort_menu_by && drinkListAdapter != null) {
-            Collections.sort(drinkList, (a, b) -> b.getName().compareTo(a.getName()));
-            drinkListAdapter.notifyDataSetChanged();
-            return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
 
-    boolean setList(List<Drink> list) {
+    boolean setList(List<Comment> list) {
         try {
             RecyclerView rvList =
-                    (RecyclerView) findViewById(R.id.drinks_list_recycler_view);
+                    (RecyclerView) findViewById(R.id.comment_list_recycler_view);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             rvList.setLayoutManager(layoutManager);
+
+            commentListAdapter = new CommentListAdapter(list, networkAPI);
+            rvList.setAdapter(commentListAdapter);
             rvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -244,9 +229,6 @@ public class DrinksActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
             }*/
             });
-
-            drinkListAdapter = new DrinkListAdapter(list, networkAPI);
-            rvList.setAdapter(drinkListAdapter);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -254,10 +236,10 @@ public class DrinksActivity extends AppCompatActivity {
         }
     }
 
-    public Subscription getSub(Observable<Drinks> mydata, List<Drink> cafeList) {
+    public Subscription getSub(Observable<Comments> mydata, List<Comment> cafeList) {
         return mydata.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(Drinks::getMenu)
+                .map(Comments::getComments)
                 .flatMap(Observable::from)
                 .subscribe(cafe -> {
                     Log.e("CAFE_DATA", cafe.toString());
@@ -266,17 +248,18 @@ public class DrinksActivity extends AppCompatActivity {
                     Log.e("onError", "ERORR");
                 }, () -> {
                     if (cafeList.isEmpty()){
-                        Toast t = Toast.makeText(DrinksActivity.this, "No drinks in menu!", Toast.LENGTH_LONG);
+                        Toast t = Toast.makeText(CommentsActivity.this, "No comments in list!", Toast.LENGTH_LONG);
                         t.show();
                     }
                     setList(cafeList);
-                    drinkListCopy = new LinkedList<>(cafeList);
+                    commentListCopy = new LinkedList<>(cafeList);
                 });
     }
 
     public void manageList(){
 
-        drinkList  = new LinkedList<>();
-        subscription = getSub(networkAPI.getDrinksById(cafeId), drinkList);
+
+        commentList  = new LinkedList<>();
+        subscription = getSub(networkAPI.getCommentsById(cafeId), commentList);
     }
 }

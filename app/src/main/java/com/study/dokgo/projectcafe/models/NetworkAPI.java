@@ -42,8 +42,17 @@ public interface NetworkAPI {
     @GET("selectTobaccos.php")
     Observable<Tobaccos> getTobaccosById(@Query("id") String id);
 
+    @GET("selectComments.php")
+    Observable<Comments> getCommentsById(@Query("id") String id);
+
+    @GET("selectCommentById.php")
+    Observable<Comments> getCommentById(@Query("id") String id);
+
     @GET("selectMenu.php")
     Observable<Dishes> getMenuById(@Query("id") String id);
+
+    @GET("freeQuery.php")
+    Observable<String> getFreeQuery(@Query("query") String query);
 
     @FormUrlEncoded
     @POST("insertCafe.php")
@@ -82,6 +91,15 @@ public interface NetworkAPI {
             @Field("name") String name,
             @Field("cost") String cost,
             @Field("line") String line,
+            @Field("cafeId") String cafeId
+    );
+
+    @FormUrlEncoded
+    @POST("insertComment.php")
+    Observable<String> insertComment(
+            @Field("email") String email,
+            @Field("content") String content,
+            @Field("rate") String rate,
             @Field("cafeId") String cafeId
     );
 
@@ -128,6 +146,15 @@ public interface NetworkAPI {
             @Field("line") String line,
             @Field("tobaccoId") String tobaccoId
 
+    );
+
+    @FormUrlEncoded
+    @POST("updateComment.php")
+    Observable<String> updateComment(
+            @Field("email") String email,
+            @Field("content") String content,
+            @Field("rate") String rate,
+            @Field("id") String id
     );
 
     @FormUrlEncoded

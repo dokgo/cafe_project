@@ -47,7 +47,11 @@
         </activity>
         <activity android:name=".view.TobaccosActivity" />
         <activity android:name=".view.AddTobaccoActivity" />
-        <activity android:name=".view.EditTobaccoActivity"></activity>
+        <activity android:name=".view.EditTobaccoActivity" />
+        <activity android:name=".view.CommentsActivity" />
+        <activity android:name=".view.AddCommentActivity" />
+        <activity android:name=".view.EditCommentActivity" />
+        <activity android:name=".view.QueryActivity"></activity>
     </application>
 
 </manifest>

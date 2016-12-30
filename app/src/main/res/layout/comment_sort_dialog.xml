@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/box"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:padding="10dp"
+    android:layout_gravity="center">
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/sort_radio_group"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:text="title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_up"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="title down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_down"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rank_up"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="rank down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rank_down"
+            android:layout_weight="1" />
+
+     <!--   <RadioButton
+            android:text="address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/address_up"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="address down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/address_down"
+            android:layout_weight="1" />-->
+
+    </RadioGroup>
+
+</LinearLayout>

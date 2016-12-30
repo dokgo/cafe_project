@@ -158,7 +158,7 @@ public class DishesActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_menu_statistic) {
-            String url = "http://test.site/generatePdf2.php?id=" + cafeId;
+            String url = "http://test.site/generatePdf2.php?table=dish&id=" + cafeId;
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);

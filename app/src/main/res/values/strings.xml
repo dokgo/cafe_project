@@ -46,6 +46,7 @@
     <string name="action_generate_statistic_menu">Dishes statistic pdf</string>
     <string name="action_generate_statistic_drinks">Drinks statistic pdf</string>
     <string name="action_generate_statistic_tobaccos">Tobaccos statistic pdf</string>
+    <string name="action_generate_statistic_comments">Comments statistic pdf</string>
     <string name="action_sort_by">Sort by</string>
     <string name="action_sort_by_name_down">Sort by name down</string>
     <string name="action_sort_by_rank_up">Sort by rank up</string>

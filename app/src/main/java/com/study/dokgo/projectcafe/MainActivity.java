@@ -26,6 +26,7 @@ import com.study.dokgo.projectcafe.presenter.CafeListAdapter;
 import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 import com.study.dokgo.projectcafe.view.AddCafeActivity;
 import com.study.dokgo.projectcafe.view.LoginActivity;
+import com.study.dokgo.projectcafe.view.QueryActivity;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -203,6 +204,11 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.free_query) {
+            startActivity(new Intent(this, QueryActivity.class));
+            return true;
+        }
+
         if (id == R.id.action_sort_by_name_up && cafeListAdapter != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             LayoutInflater inflater = this.getLayoutInflater();
@@ -233,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
             });
+
+
             /*Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
             cafeListAdapter.notifyDataSetChanged();*/
             return true;
