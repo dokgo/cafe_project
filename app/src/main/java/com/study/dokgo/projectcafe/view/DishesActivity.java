@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +13,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.study.dokgo.projectcafe.MainActivity;
@@ -164,41 +167,46 @@ public class DishesActivity extends AppCompatActivity {
 
 
         if (id == R.id.action_sort_menu_by_name_up && dishListAdapter != null) {
-            Collections.sort(dishList, (a, b) -> a.getName().compareTo(b.getName()));
-            dishListAdapter.notifyDataSetChanged();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = this.getLayoutInflater();
+            builder.setTitle("Sort by").setView(inflater.inflate(R.layout.dishes_sort_dialog, null));
+            builder.setPositiveButton("Sort", (dialog,i) -> dialog.dismiss());
+            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(dishList, (a, b) -> a.getName().compareTo(b.getName()));
+                dishListAdapter.notifyDataSetChanged(); dialog.cancel();});
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.sort_radio_group);
+            rg.setOnCheckedChangeListener((g,i) -> {
+                switch (i) {
+                    case R.id.name_up:
+                        Collections.sort(dishList, (a, b) -> a.getName().compareTo(b.getName()));
+                        dishListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.name_down:
+                        Collections.sort(dishList, (a, b) -> b.getName().compareTo(a.getName()));
+                        dishListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.price_up:
+                        Collections.sort(dishList, Dish::compareToUpCost);
+                        dishListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.price_down:
+                        Collections.sort(dishList, Dish::compareToDownCost);
+                        dishListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.portion_up:
+                        Collections.sort(dishList, Dish::compareToUpPortion);
+                        dishListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.portion_down:
+                        Collections.sort(dishList, Dish::compareToDownPortion);
+                        dishListAdapter.notifyDataSetChanged();
+                        break;
+                }
+            });
+
             return true;
         }
-
-        if (id == R.id.action_sort_menu_by_name_down && dishListAdapter != null) {
-            Collections.sort(dishList, (a, b) -> b.getName().compareTo(a.getName()));
-            dishListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_cost_up && dishListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToUpCost);
-            dishListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_cost_down && dishListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToDownCost);
-            dishListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_portion_up && dishListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToUpPortion);
-            dishListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_portion_down && dishListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToDownPortion);
-            dishListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
 
         return super.onOptionsItemSelected(item);
     }

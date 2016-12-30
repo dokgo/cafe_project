@@ -14,18 +14,28 @@
         android:title="Search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
-
+    
 
     <item
         android:id="@+id/action_menu_statistic"
         android:orderInCategory="100"
-        android:title="@string/action_generate_statistic_menu" />
+        android:title="@string/action_generate_statistic_tobaccos" />
 
     <item
-        android:id="@+id/action_sort_menu_by_name_up"
+        android:id="@+id/action_sort_menu_by"
         android:orderInCategory="100"
         android:title="@string/action_sort_by" />
 
+
+   <!-- <item
+        android:id="@+id/action_sort_menu_by_portion_up"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_menu_by_portion_up" />
+
+    <item
+        android:id="@+id/action_sort_menu_by_portion_down"
+        android:orderInCategory="100"
+        android:title="@string/action_sort_menu_by_portion_down" />-->
 
 
 </menu>

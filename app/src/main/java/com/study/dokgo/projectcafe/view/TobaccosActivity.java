@@ -173,10 +173,9 @@ public class TobaccosActivity extends AppCompatActivity {
             LayoutInflater inflater = this.getLayoutInflater();
             builder.setTitle("Sort by").setView(inflater.inflate(R.layout.tobacco_sort_dialog, null));
             builder.setPositiveButton("Sort", (dialog,i) -> dialog.dismiss());
-            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(tobaccoList, (a, b) -> b.getName().compareTo(a.getName()));
+            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(tobaccoList, (a, b) -> a.getName().compareTo(b.getName()));
                 tobaccoListAdapter.notifyDataSetChanged(); dialog.cancel();});
             AlertDialog dialog = builder.create();
-            dialog.getWindow().setLayout(300, 200);
             dialog.show();
             RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.sort_radio_group);
             rg.setOnCheckedChangeListener((g,i) -> {
@@ -189,11 +188,11 @@ public class TobaccosActivity extends AppCompatActivity {
                         Collections.sort(tobaccoList, (b, a) -> a.compareToName(b));
                         tobaccoListAdapter.notifyDataSetChanged();
                         break;
-                    case R.id.rank_up:
+                    case R.id.price_up:
                         Collections.sort(tobaccoList, (a, b) -> a.compareToPrice(b));
                         tobaccoListAdapter.notifyDataSetChanged();
                         break;
-                    case R.id.rank_down:
+                    case R.id.price_down:
                         Collections.sort(tobaccoList,(a, b) -> b.compareToPrice(a));
                         tobaccoListAdapter.notifyDataSetChanged();
                         break;
@@ -201,31 +200,6 @@ public class TobaccosActivity extends AppCompatActivity {
             });
             return true;
         }
-
-        /*if (id == R.id.action_sort_menu_by_cost_up && tobaccoListAdapter != null) {
-            Collections.sort(tobaccoList, Tobacco::compareToUpCost);
-            tobaccoListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_cost_down && tobaccoListAdapter != null) {
-            Collections.sort(tobaccoList, Tobacco::compareToDownCost);
-            tobaccoListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_portion_up && tobaccoListAdapter != null) {
-            Collections.sort(tobaccoList, Tobacco::compareToUpPortion);
-            tobaccoListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_portion_down && tobaccoListAdapter != null) {
-            Collections.sort(tobaccoList, Tobacco::compareToDownPortion);
-            tobaccoListAdapter.notifyDataSetChanged();
-            return true;
-        }
-*/
 
         return super.onOptionsItemSelected(item);
     }

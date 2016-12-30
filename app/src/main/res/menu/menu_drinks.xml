@@ -16,16 +16,16 @@
         app:showAsAction="always" />
 
 
+
     <item
         android:id="@+id/action_menu_statistic"
         android:orderInCategory="100"
-        android:title="@string/action_generate_statistic_menu" />
+        android:title="@string/action_generate_statistic_drinks" />
 
     <item
         android:id="@+id/action_sort_menu_by_name_up"
         android:orderInCategory="100"
         android:title="@string/action_sort_by" />
-
 
 
 </menu>

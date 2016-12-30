@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     CafeListAdapter cafeListAdapter;
     SharedPreferences preferences;
     public static int user_status;
+    public static String user_email;
 
     @Override
     public void onBackPressed() {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = getSharedPreferences(LoginActivity.USER_PREFERENCES, Context.MODE_PRIVATE);
         user_status = preferences.getInt(LoginActivity.USER_STATUS, -1);
+        user_email = preferences.getString(LoginActivity.USER_EMAIL, null);
         Log.e("STATUS", Integer.toString(preferences.getInt(LoginActivity.USER_STATUS, -1)));
 
 
@@ -206,20 +208,19 @@ public class MainActivity extends AppCompatActivity {
             LayoutInflater inflater = this.getLayoutInflater();
             builder.setTitle("Sort by").setView(inflater.inflate(R.layout.main_sort_dialog, null));
             builder.setPositiveButton("Sort", (dialog,i) -> dialog.dismiss());
-            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(cafeList, (a, b) -> b.getName().compareTo(a.getName()));
+            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
                 cafeListAdapter.notifyDataSetChanged(); dialog.cancel();});
             AlertDialog dialog = builder.create();
-            dialog.getWindow().setLayout(300, 200);
             dialog.show();
             RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.sort_radio_group);
             rg.setOnCheckedChangeListener((g,i) -> {
                 switch (i) {
                     case R.id.name_up:
-                        Collections.sort(cafeList, (a, b) -> b.getName().compareTo(a.getName()));
+                        Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
                         cafeListAdapter.notifyDataSetChanged();
                         break;
                     case R.id.name_down:
-                        Collections.sort(cafeList, (b, a) -> b.getName().compareTo(a.getName()));
+                        Collections.sort(cafeList, (b, a) -> a.getName().compareTo(b.getName()));
                         cafeListAdapter.notifyDataSetChanged();
                         break;
                     case R.id.rank_up:

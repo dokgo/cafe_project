@@ -6,14 +6,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.study.dokgo.projectcafe.MainActivity;
@@ -166,41 +169,51 @@ public class DrinksActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_sort_menu_by_name_up && drinkListAdapter != null) {
-            Collections.sort(drinkList, (a, b) -> a.getName().compareTo(b.getName()));
-            drinkListAdapter.notifyDataSetChanged();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = this.getLayoutInflater();
+            builder.setTitle("Sort by").setView(inflater.inflate(R.layout.drinks_sort_dialog, null));
+            builder.setPositiveButton("Sort", (dialog,i) -> dialog.dismiss());
+            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(drinkList, (a, b) -> a.getName().compareTo(b.getName()));
+                drinkListAdapter.notifyDataSetChanged(); dialog.cancel();});
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.sort_radio_group);
+            rg.setOnCheckedChangeListener((g,i) -> {
+                switch (i) {
+                    case R.id.name_up:
+                        Collections.sort(drinkList, (a, b) -> a.compareToName(b));
+                        drinkListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.name_down:
+                        Collections.sort(drinkList, (b, a) -> a.compareToName(b));
+                        drinkListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.price_up:
+                        Collections.sort(drinkList, (a, b) -> a.compareToCost(b));
+                        drinkListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.price_down:
+                        Collections.sort(drinkList,(a, b) -> b.compareToCost(a));
+                        drinkListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.volume_up:
+                        Collections.sort(drinkList,(a, b) -> a.compareToVolume(b));
+                        drinkListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.volume_down:
+                        Collections.sort(drinkList,(a, b) -> b.compareToVolume(a));
+                        drinkListAdapter.notifyDataSetChanged();
+                        break;
+                }
+            });
             return true;
         }
 
-        if (id == R.id.action_sort_menu_by_name_down && drinkListAdapter != null) {
+        if (id == R.id.action_sort_menu_by && drinkListAdapter != null) {
             Collections.sort(drinkList, (a, b) -> b.getName().compareTo(a.getName()));
             drinkListAdapter.notifyDataSetChanged();
             return true;
         }
-
-       /* if (id == R.id.action_sort_menu_by_cost_up && drinkListAdapter != null) {
-            Collections.sort(drinkList, Drink::compareToUpCost);
-            drinkListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_cost_down && drinkListAdapter != null) {
-            Collections.sort(drinkList, Drink::compareToDownCost);
-            drinkListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_portion_up && drinkListAdapter != null) {
-            Collections.sort(drinkList, Drink::compareToUpPortion);
-            drinkListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_portion_down && drinkListAdapter != null) {
-            Collections.sort(drinkList, Drink::compareToDownPortion);
-            drinkListAdapter.notifyDataSetChanged();
-            return true;
-        }*/
-
 
         return super.onOptionsItemSelected(item);
     }
