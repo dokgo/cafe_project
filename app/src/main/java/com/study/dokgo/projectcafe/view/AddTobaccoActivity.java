@@ -18,31 +18,37 @@ import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AddCafeActivity extends AppCompatActivity {
+public class AddTobaccoActivity extends AppCompatActivity {
+
+    String cafeId;
+    NetworkAPI networkAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_cafe);
+        setContentView(R.layout.activity_add_tobacco);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Add cafe");
+        toolbar.setTitle("Add tobacco");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(arrow -> onBackPressed());
 
+        try {
+            cafeId = getIntent().getExtras().get("id").toString();
+        } catch (NullPointerException e) {
+            Log.e(getClass().getName(), "WTFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+            return;
+        }
 
-        NetworkAPI cafeService =
+        networkAPI =
                 new RetrofitAPI()
                         .getRetrofit()
-
                         .create(NetworkAPI.class);
 
 
-        EditText editName = (EditText) findViewById(R.id.cafe_name_add);
-        EditText editAddress = (EditText) findViewById(R.id.cafe_address_add);
-        EditText editRank = (EditText) findViewById(R.id.cafe_rank_add);
-        EditText editDesc = (EditText) findViewById(R.id.cafe_description_add);
-        EditText editLink = (EditText) findViewById(R.id.cafe_src_add);
+        EditText tobaccoName = (EditText) findViewById(R.id.menu_tobacco_name);
+        EditText tobaccoCost = (EditText) findViewById(R.id.menu_tobacco_cost);
+        EditText tobaccoLine = (EditText) findViewById(R.id.menu_tobacco_line);
 
         String[] status = new String[1];
 
@@ -50,21 +56,19 @@ public class AddCafeActivity extends AppCompatActivity {
         Context context = saveButton.getContext();
         saveButton.setOnClickListener(view -> {
 
-            if (isEmpty(editName) ||
-                    isEmpty(editRank) ||
-                    isEmpty(editDesc) ||
-                    isEmpty(editAddress) ||
-                    isEmpty(editLink)
+            if (isEmpty(tobaccoName) ||
+                    isEmpty(tobaccoLine) ||
+                    isEmpty(tobaccoCost)
                     ) {
+
                 alertD(context, R.string.dialog_about_title, R.string.dialog_about_message).show();
             } else {
-                cafeService
-                        .insertCafe(
-                                editAddress.getText().toString(),
-                                editRank.getText().toString(),
-                                editDesc.getText().toString(),
-                                editName.getText().toString(),
-                                editLink.getText().toString()
+                networkAPI
+                        .insertTobacco(
+                                tobaccoName.getText().toString(),
+                                tobaccoCost.getText().toString(),
+                                tobaccoLine.getText().toString(),
+                                cafeId
                         )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -75,7 +79,7 @@ public class AddCafeActivity extends AppCompatActivity {
                                         status[0] = "OK";
                                     } else
                                         status[0] = n;
-                                    Log.e("ErrorPHP", n);
+                                    Log.e("ErrorPHP", status[0]);
                                 },
                                 t -> Log.e("INSERT ERROR", t.toString()),
                                 () -> {
@@ -112,22 +116,10 @@ public class AddCafeActivity extends AppCompatActivity {
         builder.setCancelable(false);
         builder.setPositiveButton(android.R.string.ok,
                 (d, w) -> {
-                    if (text != R.string.dialog_about_message)
-                        startActivity(
-                                new Intent(context,
-                                        MainActivity.class)
-                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    if (text != R.string.dialog_about_message && text != R.string.error)
+                        finish();
                 }
         );
         return builder.create();
-    }
-
-    public static class AddDrinkActivity extends AppCompatActivity {
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_add_drink);
-        }
     }
 }

@@ -15,10 +15,6 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_add_cafe"
-        android:orderInCategory="100"
-        android:title="@string/action_add_cafe" />
 
     <item
         android:id="@+id/action_cafe_statistic"
@@ -29,22 +25,6 @@
     <item
         android:id="@+id/action_sort_by_name_up"
         android:orderInCategory="100"
-        android:title="@string/action_sort_by_name_up" />
-
-    <item
-        android:id="@+id/action_sort_by_name_down"
-        android:orderInCategory="100"
-        android:title="@string/action_sort_by_name_down" />
-
-    <item
-        android:id="@+id/action_sort_by_rank_up"
-        android:orderInCategory="100"
-        android:title="@string/action_sort_by_rank_up" />
-
-    <item
-        android:id="@+id/action_sort_by_rank_down"
-        android:orderInCategory="100"
-        android:title="@string/action_sort_by_rank_down" />
-
+        android:title="@string/action_sort_by" />
 
 </menu>

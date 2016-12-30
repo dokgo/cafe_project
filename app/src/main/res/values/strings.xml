@@ -43,11 +43,28 @@
     <string name="action_sort_menu_by_portion_down">Sort by portion down</string>
     <string name="dish_cuisine">Dish cuisine</string>
     <string name="action_generate_statistic_cafe">Cafe statistic pdf</string>
-    <string name="action_generate_statistic_menu">Menu statistic pdf</string>
-    <string name="action_sort_by_name_up">Sort by name up</string>
+    <string name="action_generate_statistic_menu">Dishes statistic pdf</string>
+    <string name="action_generate_statistic_drinks">Drinks statistic pdf</string>
+    <string name="action_generate_statistic_tobaccos">Tobaccos statistic pdf</string>
+    <string name="action_sort_by">Sort by</string>
     <string name="action_sort_by_name_down">Sort by name down</string>
     <string name="action_sort_by_rank_up">Sort by rank up</string>
     <string name="action_sort_by_rank_down">Sort by rank down</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 
 
 </resources>

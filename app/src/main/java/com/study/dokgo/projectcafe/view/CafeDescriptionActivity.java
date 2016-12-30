@@ -1,7 +1,8 @@
 package com.study.dokgo.projectcafe.view;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.study.dokgo.projectcafe.MainActivity;
 import com.study.dokgo.projectcafe.R;
 import com.study.dokgo.projectcafe.models.Cafe;
 import com.study.dokgo.projectcafe.models.Cafes;
@@ -127,6 +129,7 @@ public class CafeDescriptionActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_cafe, menu);
@@ -134,13 +137,37 @@ public class CafeDescriptionActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if (MainActivity.user_status != 0) {
+            MenuItem item = menu.findItem(R.id.action_edit_cafe);
+            if (item.isVisible())
+                item.setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
 
-
         if (id == R.id.action_show_menu) {
-            Intent intent = new Intent(this, MenuActivity.class);
+            Intent intent = new Intent(this, DishesActivity.class);
+            intent.putExtra("id", cafeId);
+            this.startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.action_show_drinks) {
+            Intent intent = new Intent(this, DrinksActivity.class);
+            intent.putExtra("id", cafeId);
+            this.startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.action_show_tabacco) {
+            Intent intent = new Intent(this, TobaccosActivity.class);
             intent.putExtra("id", cafeId);
             this.startActivity(intent);
             return true;

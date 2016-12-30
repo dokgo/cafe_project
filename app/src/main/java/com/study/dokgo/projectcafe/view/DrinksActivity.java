@@ -4,8 +4,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -17,11 +18,10 @@ import android.widget.Toast;
 
 import com.study.dokgo.projectcafe.MainActivity;
 import com.study.dokgo.projectcafe.R;
-import com.study.dokgo.projectcafe.models.Cafe;
-import com.study.dokgo.projectcafe.models.Dish;
-import com.study.dokgo.projectcafe.models.Dishes;
+import com.study.dokgo.projectcafe.models.Drink;
+import com.study.dokgo.projectcafe.models.Drinks;
 import com.study.dokgo.projectcafe.models.NetworkAPI;
-import com.study.dokgo.projectcafe.presenter.MenuListAdapter;
+import com.study.dokgo.projectcafe.presenter.DrinkListAdapter;
 import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 
 import java.util.Collections;
@@ -33,24 +33,37 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MenuActivity extends AppCompatActivity {
+public class DrinksActivity extends AppCompatActivity {
 
     Subscription subscription;
     NetworkAPI networkAPI;
     String cafeId;
-    List<Dish> dishList;
-    List<Dish> dishListCopy;
-    MenuListAdapter menuListAdapter;
+    List<Drink> drinkList;
+    List<Drink> drinkListCopy;
+    DrinkListAdapter drinkListAdapter;
+    FloatingActionButton fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_drinks);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Menu");
+        toolbar.setTitle("Drinks");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(arrow -> onBackPressed());
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(this, AddDrinkActivity.class);
+            intent.putExtra("id", cafeId);
+            this.startActivity(intent);
+        });
+        if (MainActivity.user_status != 0) {
+            fab.hide();
+        }
+
 
         try {
             cafeId = getIntent().getExtras().get("id").toString();
@@ -89,11 +102,11 @@ public class MenuActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_drinks, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search_menu);
 
-        SearchManager searchManager = (SearchManager) MenuActivity.this.getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) DrinksActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
         SearchView searchView = null;
         if (searchItem != null) {
@@ -101,10 +114,10 @@ public class MenuActivity extends AppCompatActivity {
         }
         if (searchView != null) {
 
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(MenuActivity.this.getComponentName()));
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(DrinksActivity.this.getComponentName()));
             searchView.setOnCloseListener(() -> {
-               /* String s = Integer.toString(dishListCopy.size());
-                Toast t = Toast.makeText(MenuActivity.this, s, Toast.LENGTH_SHORT);
+               /* String s = Integer.toString(drinkListCopy.size());
+                Toast t = Toast.makeText(DishesActivity.this, s, Toast.LENGTH_SHORT);
                 t.show();*/
 
                 return false;
@@ -120,15 +133,15 @@ public class MenuActivity extends AppCompatActivity {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     Log.e("input", newText);
-                    List<Dish> newList = new LinkedList<>();
+                    List<Drink> newList = new LinkedList<>();
                     String lower = newText.toLowerCase();
-                    for(Dish dish: dishListCopy){
+                    for(Drink dish: drinkListCopy){
                         if (dish.getName().toLowerCase().contains(lower)){
                             newList.add(dish);
                         }
                     }
 
-                    menuListAdapter
+                    drinkListAdapter
                             .updateAll(newList);
                     return false;
                 }
@@ -152,63 +165,75 @@ public class MenuActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_add_dish) {
-            Intent intent = new Intent(this, AddDishActivity.class);
-            intent.putExtra("id", cafeId);
-            this.startActivity(intent);
+        if (id == R.id.action_sort_menu_by_name_up && drinkListAdapter != null) {
+            Collections.sort(drinkList, (a, b) -> a.getName().compareTo(b.getName()));
+            drinkListAdapter.notifyDataSetChanged();
             return true;
         }
 
-        if (id == R.id.action_sort_menu_by_name_up && menuListAdapter != null) {
-            Collections.sort(dishList, (a, b) -> a.getName().compareTo(b.getName()));
-            menuListAdapter.notifyDataSetChanged();
+        if (id == R.id.action_sort_menu_by_name_down && drinkListAdapter != null) {
+            Collections.sort(drinkList, (a, b) -> b.getName().compareTo(a.getName()));
+            drinkListAdapter.notifyDataSetChanged();
             return true;
         }
 
-        if (id == R.id.action_sort_menu_by_name_down && menuListAdapter != null) {
-            Collections.sort(dishList, (a, b) -> b.getName().compareTo(a.getName()));
-            menuListAdapter.notifyDataSetChanged();
+       /* if (id == R.id.action_sort_menu_by_cost_up && drinkListAdapter != null) {
+            Collections.sort(drinkList, Drink::compareToUpCost);
+            drinkListAdapter.notifyDataSetChanged();
             return true;
         }
 
-        if (id == R.id.action_sort_menu_by_cost_up && menuListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToUpCost);
-            menuListAdapter.notifyDataSetChanged();
+        if (id == R.id.action_sort_menu_by_cost_down && drinkListAdapter != null) {
+            Collections.sort(drinkList, Drink::compareToDownCost);
+            drinkListAdapter.notifyDataSetChanged();
             return true;
         }
 
-        if (id == R.id.action_sort_menu_by_cost_down && menuListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToDownCost);
-            menuListAdapter.notifyDataSetChanged();
+        if (id == R.id.action_sort_menu_by_portion_up && drinkListAdapter != null) {
+            Collections.sort(drinkList, Drink::compareToUpPortion);
+            drinkListAdapter.notifyDataSetChanged();
             return true;
         }
 
-        if (id == R.id.action_sort_menu_by_portion_up && menuListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToUpPortion);
-            menuListAdapter.notifyDataSetChanged();
+        if (id == R.id.action_sort_menu_by_portion_down && drinkListAdapter != null) {
+            Collections.sort(drinkList, Drink::compareToDownPortion);
+            drinkListAdapter.notifyDataSetChanged();
             return true;
-        }
-
-        if (id == R.id.action_sort_menu_by_portion_down && menuListAdapter != null) {
-            Collections.sort(dishList, Dish::compareToDownPortion);
-            menuListAdapter.notifyDataSetChanged();
-            return true;
-        }
+        }*/
 
 
         return super.onOptionsItemSelected(item);
     }
 
-    boolean setList(List<Dish> list) {
+    boolean setList(List<Drink> list) {
         try {
             RecyclerView rvList =
-                    (RecyclerView) findViewById(R.id.menu_list_recycler_view);
+                    (RecyclerView) findViewById(R.id.drinks_list_recycler_view);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             rvList.setLayoutManager(layoutManager);
+            rvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    if (MainActivity.user_status == 0 && dy > 0 && fab.isShown()) {
+                        fab.hide();
+                    } else if (MainActivity.user_status == 0 &&dy < 0 && !fab.isShown()) {
+                        fab.show();
+                    }
+                }
 
-            menuListAdapter = new MenuListAdapter(list, networkAPI);
-            rvList.setAdapter(menuListAdapter);
+            /*@Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    fab.show();
+                }
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }*/
+            });
+
+            drinkListAdapter = new DrinkListAdapter(list, networkAPI);
+            rvList.setAdapter(drinkListAdapter);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -216,10 +241,10 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    public Subscription getSub(Observable<Dishes> mydata, List<Dish> cafeList) {
+    public Subscription getSub(Observable<Drinks> mydata, List<Drink> cafeList) {
         return mydata.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(Dishes::getMenu)
+                .map(Drinks::getMenu)
                 .flatMap(Observable::from)
                 .subscribe(cafe -> {
                     Log.e("CAFE_DATA", cafe.toString());
@@ -228,18 +253,17 @@ public class MenuActivity extends AppCompatActivity {
                     Log.e("onError", "ERORR");
                 }, () -> {
                     if (cafeList.isEmpty()){
-                        Toast t = Toast.makeText(MenuActivity.this, "No dishes in menu!", Toast.LENGTH_LONG);
+                        Toast t = Toast.makeText(DrinksActivity.this, "No drinks in menu!", Toast.LENGTH_LONG);
                         t.show();
                     }
                     setList(cafeList);
-                    dishListCopy = new LinkedList<>(cafeList);
+                    drinkListCopy = new LinkedList<>(cafeList);
                 });
     }
 
     public void manageList(){
 
-
-        dishList  = new LinkedList<>();
-        subscription = getSub(networkAPI.getMenuById(cafeId), dishList);
+        drinkList  = new LinkedList<>();
+        subscription = getSub(networkAPI.getDrinksById(cafeId), drinkList);
     }
 }

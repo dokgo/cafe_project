@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName;
 public class Dishes {
 
     @SerializedName("menu")
-    @Expose
     private List<Dish> menu = new ArrayList<>();
 
     /**

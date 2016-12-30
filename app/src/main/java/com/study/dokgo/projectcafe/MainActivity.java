@@ -3,7 +3,9 @@ package com.study.dokgo.projectcafe;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,9 +14,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.RadioGroup;
 
 import com.study.dokgo.projectcafe.models.Cafe;
 import com.study.dokgo.projectcafe.models.Cafes;
@@ -22,11 +25,11 @@ import com.study.dokgo.projectcafe.models.NetworkAPI;
 import com.study.dokgo.projectcafe.presenter.CafeListAdapter;
 import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 import com.study.dokgo.projectcafe.view.AddCafeActivity;
+import com.study.dokgo.projectcafe.view.LoginActivity;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import rx.Observable;
 import rx.Subscription;
@@ -41,16 +44,44 @@ public class MainActivity extends AppCompatActivity {
     List<Cafe> cafeListCopy;
     Context context;
     CafeListAdapter cafeListAdapter;
+    SharedPreferences preferences;
+    public static int user_status;
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Really Exit?")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, (a, b) -> {
+                    MainActivity.super.onBackPressed();
+
+                }).create().show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        preferences = getSharedPreferences(LoginActivity.USER_PREFERENCES, Context.MODE_PRIVATE);
+        user_status = preferences.getInt(LoginActivity.USER_STATUS, -1);
+        Log.e("STATUS", Integer.toString(preferences.getInt(LoginActivity.USER_STATUS, -1)));
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       // cafeList = new LinkedList<>();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            startActivity(new Intent(this, AddCafeActivity.class));
+        });
+        if (user_status != 0) {
+            fab.hide();
+        }
+
+        // cafeList = new LinkedList<>();
         context = this;
 
         networkAPI =
@@ -63,6 +94,27 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvList.setLayoutManager(layoutManager);
+
+        rvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (user_status == 0 && dy > 0 && fab.isShown()) {
+                    fab.hide();
+                } else if (user_status == 0 &&dy < 0 && !fab.isShown()) {
+                    fab.show();
+                }
+            }
+
+            /*@Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    fab.show();
+                }
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }*/
+        });
+
 
         cafeListAdapter = new CafeListAdapter(cafeList);
         rvList.setAdapter(cafeListAdapter);
@@ -119,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("input", newText);
                     List<Cafe> newList = new LinkedList<>();
                     String lower = newText.toLowerCase();
-                    for(Cafe cafe: cafeListCopy){
-                        if (cafe.getName().toLowerCase().contains(lower)){
+                    for (Cafe cafe : cafeListCopy) {
+                        if (cafe.getName().toLowerCase().contains(lower)) {
                             newList.add(cafe);
                         }
                     }
@@ -150,32 +202,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_sort_by_name_up && cafeListAdapter != null) {
-            Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
-            cafeListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_by_name_down && cafeListAdapter != null) {
-            Collections.sort(cafeList, (a, b) -> b.getName().compareTo(a.getName()));
-            cafeListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_by_rank_up && cafeListAdapter != null) {
-            Collections.sort(cafeList, Cafe::compareToUp);
-            cafeListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_sort_by_rank_down && cafeListAdapter != null) {
-            Collections.sort(cafeList, Cafe::compareToDown);
-            cafeListAdapter.notifyDataSetChanged();
-            return true;
-        }
-
-        if (id == R.id.action_add_cafe) {
-
-            startActivity(new Intent(this, AddCafeActivity.class));
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            builder.setTitle("Sort by").setView(inflater.inflate(R.layout.main_sort_dialog, null));
+            builder.setPositiveButton("Sort", (dialog,i) -> dialog.dismiss());
+            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(cafeList, (a, b) -> b.getName().compareTo(a.getName()));
+                cafeListAdapter.notifyDataSetChanged(); dialog.cancel();});
+            AlertDialog dialog = builder.create();
+            dialog.getWindow().setLayout(300, 200);
+            dialog.show();
+            RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.sort_radio_group);
+            rg.setOnCheckedChangeListener((g,i) -> {
+                switch (i) {
+                    case R.id.name_up:
+                        Collections.sort(cafeList, (a, b) -> b.getName().compareTo(a.getName()));
+                        cafeListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.name_down:
+                        Collections.sort(cafeList, (b, a) -> b.getName().compareTo(a.getName()));
+                        cafeListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.rank_up:
+                        Collections.sort(cafeList, Cafe::compareToUp);
+                        cafeListAdapter.notifyDataSetChanged();
+                        break;
+                    case R.id.rank_down:
+                        Collections.sort(cafeList, Cafe::compareToDown);
+                        cafeListAdapter.notifyDataSetChanged();
+                        break;
+                }
+            });
+            /*Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
+            cafeListAdapter.notifyDataSetChanged();*/
             return true;
         }
 

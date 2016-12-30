@@ -12,7 +12,13 @@ import rx.Observable;
  */
 
 public interface NetworkAPI {
-    @GET("select.php")
+    @GET("login.php")
+    Observable<User> login(@Query("email") String email, @Query("pass") String pass);
+
+    @GET("register.php")
+    Observable<User> register(@Query("email") String email, @Query("pass") String pass);
+
+@GET("select.php")
     Observable<Cafes> getCafesData();
 
     @GET("selectByFilter.php")
@@ -23,6 +29,18 @@ public interface NetworkAPI {
 
     @GET("selectDishById.php")
     Observable<Dishes> getDishById(@Query("id") String id);
+
+    @GET("selectDrinkById.php")
+    Observable<Drinks> getDrinkById(@Query("id") String id);
+
+    @GET("selectTobaccoById.php")
+    Observable<Tobaccos> getTobaccoById(@Query("id") String id);
+
+    @GET("selectDrinks.php")
+    Observable<Drinks> getDrinksById(@Query("id") String id);
+
+    @GET("selectTobaccos.php")
+    Observable<Tobaccos> getTobaccosById(@Query("id") String id);
 
     @GET("selectMenu.php")
     Observable<Dishes> getMenuById(@Query("id") String id);
@@ -50,6 +68,24 @@ public interface NetworkAPI {
     );
 
     @FormUrlEncoded
+    @POST("insertDrink.php")
+    Observable<String> insertDrink(
+            @Field("name") String name,
+            @Field("cost") String cost,
+            @Field("volume") String volume,
+            @Field("cafeId") String cafeId
+    );
+
+    @FormUrlEncoded
+    @POST("insertTobacco.php")
+    Observable<String> insertTobacco(
+            @Field("name") String name,
+            @Field("cost") String cost,
+            @Field("line") String line,
+            @Field("cafeId") String cafeId
+    );
+
+    @FormUrlEncoded
     @POST("updateCafe.php")
     Observable<String> updateCafe(
             @Field("address") String address,
@@ -71,6 +107,26 @@ public interface NetworkAPI {
             @Field("time") String time,
             @Field("cuisine") String cuisine,
             @Field("dishId") String dishId
+
+    );
+
+    @FormUrlEncoded
+    @POST("updateDrink.php")
+    Observable<String> updateDrink(
+            @Field("name") String name,
+            @Field("cost") String cost,
+            @Field("volume") String volume,
+            @Field("drinkId") String dishId
+
+    );
+
+    @FormUrlEncoded
+    @POST("updateTobacco.php")
+    Observable<String> updateTobacco(
+            @Field("name") String name,
+            @Field("cost") String cost,
+            @Field("line") String line,
+            @Field("tobaccoId") String tobaccoId
 
     );
 
