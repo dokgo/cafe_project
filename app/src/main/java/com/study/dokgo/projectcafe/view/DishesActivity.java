@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.study.dokgo.projectcafe.MainActivity;
 import com.study.dokgo.projectcafe.R;
 import com.study.dokgo.projectcafe.models.Dish;
@@ -51,6 +52,7 @@ public class DishesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dishes);
 
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(this, AddDishActivity.class);
@@ -78,6 +80,7 @@ public class DishesActivity extends AppCompatActivity {
                         .create(NetworkAPI.class);
 
         manageList();
+
 
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
 
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.study.dokgo.projectcafe.models.Cafe;
 import com.study.dokgo.projectcafe.models.Cafes;
 import com.study.dokgo.projectcafe.models.NetworkAPI;
 import com.study.dokgo.projectcafe.presenter.CafeListAdapter;
+import com.study.dokgo.projectcafe.presenter.FilterDialog;
 import com.study.dokgo.projectcafe.presenter.RetrofitAPI;
 import com.study.dokgo.projectcafe.view.AddCafeActivity;
 import com.study.dokgo.projectcafe.view.LoginActivity;
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences preferences;
     public static int user_status;
     public static String user_email;
+    private CrystalRangeSeekbar rangeSeekbar;
+
+
 
     @Override
     public void onBackPressed() {
@@ -65,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         preferences = getSharedPreferences(LoginActivity.USER_PREFERENCES, Context.MODE_PRIVATE);
         user_status = preferences.getInt(LoginActivity.USER_STATUS, -1);
@@ -103,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (user_status == 0 && dy > 0 && fab.isShown()) {
                     fab.hide();
-                } else if (user_status == 0 &&dy < 0 && !fab.isShown()) {
+                } else if (user_status == 0 && dy < 0 && !fab.isShown()) {
                     fab.show();
                 }
             }
@@ -209,17 +217,50 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_cafe_filter) {
+
+            showDialog();
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            builder.setTitle("Filter by").setView(inflater.inflate(R.layout.filter_dialog, null));
+            builder.setPositiveButton("Apply", (dialog, i) -> dialog.dismiss());
+            builder.setNegativeButton("Cancel", (dialog, i) -> {
+                Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
+                cafeListAdapter.notifyDataSetChanged();
+                dialog.cancel();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            final TextView minVal = (TextView) findViewById(R.id.minVal);
+            final TextView maxVal = (TextView) findViewById(R.id.maxVal);
+
+            rangeSeekbar = (CrystalRangeSeekbar) dialog.findViewById(R.id.price_seekbar);
+
+            rangeSeekbar.setOnRangeSeekbarChangeListener((min, max) -> {
+                minVal.setText(String.valueOf(min));
+                maxVal.setText(String.valueOf(max));
+
+            });
+*/
+            //TODO:implement logic
+
+        }
+
         if (id == R.id.action_sort_by_name_up && cafeListAdapter != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             LayoutInflater inflater = this.getLayoutInflater();
             builder.setTitle("Sort by").setView(inflater.inflate(R.layout.main_sort_dialog, null));
-            builder.setPositiveButton("Sort", (dialog,i) -> dialog.dismiss());
-            builder.setNegativeButton("Cancel", (dialog,i) -> {Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
-                cafeListAdapter.notifyDataSetChanged(); dialog.cancel();});
+            builder.setPositiveButton("Sort", (dialog, i) -> dialog.dismiss());
+            builder.setNegativeButton("Cancel", (dialog, i) -> {
+                Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
+                cafeListAdapter.notifyDataSetChanged();
+                dialog.cancel();
+            });
             AlertDialog dialog = builder.create();
             dialog.show();
             RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.sort_radio_group);
-            rg.setOnCheckedChangeListener((g,i) -> {
+            rg.setOnCheckedChangeListener((g, i) -> {
                 switch (i) {
                     case R.id.name_up:
                         Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
@@ -249,5 +290,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void showDialog(){
+        FragmentManager manager = getSupportFragmentManager();
+        FilterDialog filterDialog = FilterDialog.newInstance("Filter by");
+        filterDialog.show(manager, "namre");
+
+    }
 
 }

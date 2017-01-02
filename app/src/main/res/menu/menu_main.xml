@@ -21,6 +21,11 @@
         android:orderInCategory="100"
         android:title="@string/action_generate_statistic_cafe" />
 
+    <item
+        android:id="@+id/action_cafe_filter"
+        android:orderInCategory="100"
+        android:title="Filter by" />
+
 
     <item
         android:id="@+id/action_sort_by_name_up"
