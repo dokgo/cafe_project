@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioGroup;
 
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
@@ -44,14 +45,15 @@ public class MainActivity extends AppCompatActivity {
 
     Subscription subscription;
     NetworkAPI networkAPI;
-    List<Cafe> cafeList = new LinkedList<>();
-    List<Cafe> cafeListCopy;
+    public static List<Cafe> cafeList = new LinkedList<>();
+    public static List<Cafe> cafeListCopy;
     Context context;
-    CafeListAdapter cafeListAdapter;
+    public static CafeListAdapter cafeListAdapter;
     SharedPreferences preferences;
     public static int user_status;
     public static String user_email;
     private CrystalRangeSeekbar rangeSeekbar;
+    private String baseUrl = "http://cafepro.esy.es/";
 
 
 
@@ -205,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_cafe_statistic) {
-            String url = "http://test.site/generatePdf.php";
+            String url = baseUrl + "generatePdf.php";
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
@@ -217,32 +219,15 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.dismiss_filter) {
+            cafeListAdapter
+                    .updateAll(cafeListCopy);
+            return true;
+        }
+
         if (id == R.id.action_cafe_filter) {
 
             showDialog();
-            /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            LayoutInflater inflater = this.getLayoutInflater();
-            builder.setTitle("Filter by").setView(inflater.inflate(R.layout.filter_dialog, null));
-            builder.setPositiveButton("Apply", (dialog, i) -> dialog.dismiss());
-            builder.setNegativeButton("Cancel", (dialog, i) -> {
-                Collections.sort(cafeList, (a, b) -> a.getName().compareTo(b.getName()));
-                cafeListAdapter.notifyDataSetChanged();
-                dialog.cancel();
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-
-            final TextView minVal = (TextView) findViewById(R.id.minVal);
-            final TextView maxVal = (TextView) findViewById(R.id.maxVal);
-
-            rangeSeekbar = (CrystalRangeSeekbar) dialog.findViewById(R.id.price_seekbar);
-
-            rangeSeekbar.setOnRangeSeekbarChangeListener((min, max) -> {
-                minVal.setText(String.valueOf(min));
-                maxVal.setText(String.valueOf(max));
-
-            });
-*/
             //TODO:implement logic
 
         }

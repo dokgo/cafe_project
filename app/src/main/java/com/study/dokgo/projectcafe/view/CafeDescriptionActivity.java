@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,12 +38,17 @@ public class CafeDescriptionActivity extends AppCompatActivity {
     String cafeRank;
     NetworkAPI networkAPI;
     List<Cafe> cafeList = new LinkedList<>();
+    private View progressView;
+    private View container;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cafe_description);
 
+        progressView = findViewById(R.id.progress);
+        container = findViewById(R.id.content);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -110,6 +116,8 @@ public class CafeDescriptionActivity extends AppCompatActivity {
                         }
                 );
 
+
+
         RecyclerView rvList =
                 (RecyclerView) findViewById(R.id.suggested_cafes_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -132,7 +140,8 @@ public class CafeDescriptionActivity extends AppCompatActivity {
                 }, error -> {
                     Log.e("onError", error.toString());
                 }, () -> {
-
+                    progressView.setVisibility(View.INVISIBLE);
+                    container.setVisibility(View.VISIBLE);
                 });
 
     }

@@ -1,7 +1,6 @@
 
 package com.study.dokgo.projectcafe.models;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Locale;
@@ -9,23 +8,19 @@ import java.util.Locale;
 public class Cafe {
 
     @SerializedName("cafeId")
-    @Expose
     private String cafeId;
     @SerializedName("adress")
-    @Expose
     private String adress;
     @SerializedName("rank")
-    @Expose
     private String rank;
     @SerializedName("description")
-    @Expose
     private String description;
     @SerializedName("name")
-    @Expose
     private String name;
     @SerializedName("src")
-    @Expose
     private String src;
+    @SerializedName("avg")
+    private String avg;
 
     public Cafe(
             String id,
@@ -36,7 +31,7 @@ public class Cafe {
             String src
     ) {
         setCafeId(id);
-        setAdress(adress);
+        setAddress(adress);
         setRank(rank);
         setDescription(description);
         setName(name);
@@ -66,10 +61,10 @@ public class Cafe {
     }
 
     /**
-     * @param adress The adress
+     * @param address The address
      */
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.adress = address;
     }
 
     /**
@@ -126,6 +121,21 @@ public class Cafe {
      */
     public void setSrc(String src) {
         this.src = src;
+    }
+
+
+    /**
+     * @return The avg
+     */
+    public String getAvg() {
+        return avg;
+    }
+
+    /**
+     * @param avg The src
+     */
+    public void setAvg(String avg) {
+        this.avg = avg;
     }
 
     @Override

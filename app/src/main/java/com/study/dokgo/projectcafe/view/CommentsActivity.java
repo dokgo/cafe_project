@@ -45,6 +45,7 @@ public class CommentsActivity extends AppCompatActivity {
     List<Comment> commentListCopy;
     CommentListAdapter commentListAdapter;
     FloatingActionButton fab;
+    String baseUrl = "http://cafepro.esy.es/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +157,7 @@ public class CommentsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_menu_statistic) {
-            String url = "http://test.site/generatePdf2.php?table=comment&id=" + cafeId;
+            String url = baseUrl + "generatePdf2.php?table=comment&id=" + cafeId;
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);

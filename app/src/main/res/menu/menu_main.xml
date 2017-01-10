@@ -26,6 +26,11 @@
         android:orderInCategory="100"
         android:title="Filter by" />
 
+    <item
+        android:id="@+id/dismiss_filter"
+        android:orderInCategory="100"
+        android:title="Dismiss filter" />
+
 
     <item
         android:id="@+id/action_sort_by_name_up"

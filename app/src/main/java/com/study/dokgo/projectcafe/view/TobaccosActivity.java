@@ -45,6 +45,7 @@ public class TobaccosActivity extends AppCompatActivity {
     List<Tobacco> tobaccoListCopy;
     TobaccoListAdapter tobaccoListAdapter;
     FloatingActionButton fab;
+    String baseUrl = "http://cafepro.esy.es/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +161,7 @@ public class TobaccosActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_menu_statistic) {
-            String url = "http://test.site/generatePdf2.php?table=tobacco&id=" + cafeId;
+            String url = baseUrl + "generatePdf2.php?table=tobacco&id=" + cafeId;
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);

@@ -20,6 +20,7 @@ public class RetrofitAPI {
     public RetrofitAPI() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor(msg -> Log.i("OK_HTTP", msg));
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        String baseUrl = "http://cafepro.esy.es/";
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -28,7 +29,7 @@ public class RetrofitAPI {
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
-                .baseUrl("http://test.site/")
+                .baseUrl(baseUrl)
                 .client(httpClient.build())
                 .build();
     }
