@@ -128,7 +128,7 @@ public class CafeDescriptionActivity extends AppCompatActivity {
         rvList.setAdapter(cafeListAdapter);
 
         networkAPI
-                .getCafesData(cafeRank)
+                .getCafesData(cafeRank, MainActivity.user_email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(Cafes::getCafes)

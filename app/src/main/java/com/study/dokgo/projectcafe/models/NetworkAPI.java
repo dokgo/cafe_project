@@ -22,7 +22,7 @@ public interface NetworkAPI {
     Observable<Cafes> getCafesData();
 
     @GET("selectByFilter.php")
-    Observable<Cafes> getCafesData(@Query("rank") String rank);
+    Observable<Cafes> getCafesData(@Query("rank") String rank, @Query("email") String email);
 
     @GET("selectCafeById.php")
     Observable<Cafes> getCafeById(@Query("id") String id);
